@@ -2,7 +2,34 @@
 
 var Service, Characteristic;
 
-const piblaster = require('pi-blaster.js');
+var request = require('request-promise');
+
+async function senddat(dat) {
+
+  // This variable contains the data
+  // you want to send
+
+  var options = {
+    method: 'POST',
+
+    // http:flaskserverurl:port/route
+    uri: 'http://127.0.0.1:5000/senddat',
+    body: dat,
+
+    // Automatically stringifies
+    // the body to JSON
+    json: true
+  };
+
+  var sendrequest = request(options)
+
+    // The parsedBody contains the data
+    // sent back from the Flask server
+    .catch(function (err) {
+      console.log(err);
+    });
+}
+
 const converter = require('color-convert');
 const fs = require('fs');
 
@@ -121,9 +148,10 @@ SmartLedStripAccessory.prototype = {
   updateRGB : function(red, green, blue)
   {
       this.log("Setting rgb values to: Red: "+red + " Green: "+green+ " Blue: "+blue);
-      piblaster.setPwm(this.rPin, red/255);
-      piblaster.setPwm(this.gPin, green/255);
-      piblaster.setPwm(this.bPin, blue/255);
+      var data={
+array:[red,green,blue]};
+senddata(data)
+
   }
 
 }
